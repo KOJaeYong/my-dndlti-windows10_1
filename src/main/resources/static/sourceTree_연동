@@ -1,4 +1,0 @@
-gitHub -> sourceTree -> STS 연동 Test 
-gitHub 에서 STS 로 커밋된 정보를 주는 데 걸리는 시간은 약 1분 정도이다.
-커밋 정보를 받은 STS 는 Package Explore 에서 
-커밋을 요청했던 파일의 별 표시 마크가 사라진다
