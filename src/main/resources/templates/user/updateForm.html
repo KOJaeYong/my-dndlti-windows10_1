@@ -98,6 +98,11 @@ templates/include/navigation.html 에서 읽어옴 -->
 {{#user}}
 <form name="member_enter" method="post" 
 action="/users/{{id}}">
+<!-- html 전송방식은 get, post 만 지원한다. 
+http method 은 put, delete 도 사용가능하다
+데이터 업데이트인 경우에는 의미적으로 put 방식이 사용된다. -->
+  <input type="hidden" name="_method" value="put"/>  
+
   <!-- <input type="hidden" name="id" value="{{id}}"> -->  
 
   <div class="form-group">

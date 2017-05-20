@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.dndlti.domain.User;
@@ -82,7 +83,16 @@ public class UserController {
 		return "/user/updateForm";
 	}
 	
-	@PostMapping("/{id}")
+	/*@PostMapping("/{id}")
+	public String update(@PathVariable long id, 
+	User newUser) {
+		User user = userRepository.findOne(id);
+		user.update(newUser);
+		userRepository.save(user);
+		return "redirect:/users"; //회원목록으로 페이지이동
+	}*/
+	
+	@PutMapping("/{id}")
 	public String update(@PathVariable long id, 
 	User newUser) {
 		User user = userRepository.findOne(id);
@@ -90,8 +100,6 @@ public class UserController {
 		userRepository.save(user);
 		return "redirect:/users"; //회원목록으로 페이지이동
 	}
-	
-	
 	
 	
 	
