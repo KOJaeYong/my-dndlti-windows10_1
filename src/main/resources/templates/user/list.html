@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="kr">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <!-- <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <title>우이샤 Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
+    [if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="../css/styles.css" rel="stylesheet">
+    <![endif]
+    <link href="../css/styles.css" rel="stylesheet"> -->
+    {{> /include/header}}
+    
 </head>
 <body>
 <!-- <nav class="navbar navbar-fixed-top header">
@@ -98,15 +100,16 @@ templates/include/navigation.html 에서 읽어옴 -->
 		            <td>{{userId}}</td>
 		            <td>{{name}}</td>
 		            <td>{{email}}</td>
-		            <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+		            <td>
+		            <!-- <a href="#" class="btn btn-success" 
+		            role="button">수정</a> -->
+		            <!-- 회원 정보 수정 기능 구현 - 3-4 에서 코드 수정 -->
+		            <a href="/users/{{id}}/form" 
+		            class="btn btn-success" 
+		            role="button">수정</a>
+		            </td>
 		        </tr>
 		        {{/users}}
-                <!-- <tr>
-                    <th scope="row">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>
-                </tr> -->
               </tbody>
           </table>
         </div>

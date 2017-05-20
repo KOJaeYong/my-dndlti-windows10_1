@@ -47,4 +47,10 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public void update(User newUser) {
+		this.userId = newUser.userId;
+		this.name = newUser.name;
+		this.email = newUser.email;
+	}
 }
