@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 //JpaRepository<테이블명:net.dndlti.domain.User클래스, Primary key ID 컬럼의 자료형>
 public interface UserRepository 
 extends JpaRepository<User, Long> {
-
+	//findBy 한 다음 ctrl + space -> findByUserId
+	User findByUserId(String userId);
+	/*User findByPassword(String password);*/
 }

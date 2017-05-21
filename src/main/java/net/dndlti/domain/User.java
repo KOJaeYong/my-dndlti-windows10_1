@@ -31,7 +31,11 @@ public class User {
 	public String toString() {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
 	}
-
+	
+	public String getPassword() {
+		return password;
+	}
+	
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}

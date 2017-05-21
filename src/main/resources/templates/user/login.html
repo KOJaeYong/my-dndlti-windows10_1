@@ -3,25 +3,44 @@
 <head>
     <!-- <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>우이샤 Java Web Programming</title>
+    <title>SLiPP Java Web Programming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     [if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]
     <link href="../css/styles.css" rel="stylesheet"> -->
+    
+    <!-- mustache 템플릿 partials 기능을 구현하여 include file 함 -->
     {{> /include/header}}
     
 </head>
 <body>
+
 <!-- <nav class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
-
-            <a href="../index.html" class="navbar-brand">Dndlti</a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
-                <i class="glyphicon glyphicon-search"></i>
-            </button>
+templates 디렉토리의 html 파일은 컨트롤러에서
+url mapping 되어야 브라우저로 접근할 수 있다. 기본적으로 MVC 패턴에서는
+view 에 해당하는 모든 웹페이지에 접근하려면 무조건 컨트롤러를 통해서
+접근해야 한다. static 디렉토리에서  <a href="../index.html">
+a 태그를 사용하거나, 웹브라우저로  주소창에서 
+http://localhost:8080/index.html 입력하여 
+templates 디렉토리의 html 파일로 페이지 이동할 수 없다. 
+    HomeController 에 루트(/) 에 대한 GetMappinging 이
+       되어 있어 index 페이지 이동이 가능하다.
+    //@GetMapping("") - "" 은 /(루트)를 의미
+    //http://localhost:8080 을 브라우저 주소창에 입력
+    //templates 디렉토리의 index.html 로 이동
+    @GetMapping("")
+    public String home() {
+        return "index";
+    }
+   
+    <a href="/" class="navbar-brand">Dndlti</a>
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
+        <i class="glyphicon glyphicon-search"></i>
+    </button>
 
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse1">
@@ -74,49 +93,31 @@
         </div>
     </div>
 </div> -->
-
-<!-- mustache 템플릿을 사용하여 중복되는 코드를 
-templates/include/navigation.html 에서 읽어옴 -->
 {{> /include/navigation}}
 
 <div class="container" id="main">
-   <div class="col-md-10 col-md-offset-1">
-      <div class="panel panel-default">
-          <table class="table table-hover">
-              <thead>
-                <tr>
-                    <th>#</th> 
-                    <th>사용자 아이디</th> 
-                    <th>이름</th> 
-                    <th>이메일</th>
-                    <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- mustache 템플릿 반복문 사용 - 2-3 사용자 목록 기능 구현-->
-		        {{#users}}
-		        <tr>
-		            <th scope="row">{{id}}</th>
-		            <td>{{userId}}</td>
-		            <td>{{name}}</td>
-		            <td>{{email}}</td>
-		            <td>
-		            <!-- <a href="#" class="btn btn-success" 
-		            role="button">수정</a> -->
-		            <!-- 회원 정보 수정 기능 구현 - 3-4 에서 코드 수정 -->
-		            <a href="/users/{{id}}/form" 
-		            class="btn btn-success" 
-		            role="button">수정</a>
-		            </td>
-		        </tr>
-		        {{/users}}
-              </tbody>
-          </table>
+   <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-default content-main">
+          
+          <form name="question" method="post" 
+          action="/users/login">
+              <div class="form-group">
+                  <label for="userId">사용자 아이디</label>
+                  <input class="form-control" id="userId" name="userId" placeholder="User ID">
+              </div>
+              <div class="form-group">
+                  <label for="password">비밀번호</label>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+              </div>
+              <button type="submit" class="btn btn-success clearfix pull-right">로그인</button>
+              <div class="clearfix"></div>
+          </form>
+        
         </div>
     </div>
 </div>
 
-<!-- script references 
+<!-- script references
 <script src="../js/jquery-2.2.0.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/scripts.js"></script> -->

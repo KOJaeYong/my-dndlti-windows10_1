@@ -1,5 +1,7 @@
 package net.dndlti.web;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,40 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 	
+	//index.html 에서 로그인 메뉴 버튼 클릭하면 
+	//templates/user/login.html 페이지로 이동
+	@GetMapping("/loginForm")
+	public String loginForm() {
+		return "/user/login";
+	}
+	
+	//src/main/resources/templates/user/login.html 에서
+	//로그인폼 action="/users/login" 과 url mapping
+	@PostMapping("/login")
+	public String login(String userId, String password,
+	HttpSession session) {
+		User user = userRepository.findByUserId(userId);
+		if (user == null) {
+			System.out.println("Login Failure!");
+			/*return "/user/login";*/
+			return "redirect:/users/loginForm";
+		}
+		/*User passwd = 
+		userRepository.findByPassword(password);
+		if (passwd == null) {
+			return "/user/login";
+		}*/
+		if (!password.equals(user.getPassword())) {
+			System.out.println("Login Failure!");
+			/*return "/user/login";*/
+			return "redirect:/users/loginForm";
+		}
+		
+		System.out.println("Login Success!");
+		session.setAttribute("user", user);
+		return "redirect:/";
+	}
+	
 	//http://localhost:8080/user/form.html에서 회원가입
 	/*@PostMapping("")	
 	public String memberCreate(User user) {
@@ -40,6 +76,13 @@ public class UserController {
 	@GetMapping("/form")	
 	public String form() {
 		return "/user/form";
+	}
+	
+	//index.html 에서 회원정보수정 메뉴 버튼 클릭하면 
+	//templates/user/updateForm.html 페이지로 이동
+	@GetMapping("/updateForm")	
+	public String updateForm() {
+		return "/user/updateForm";
 	}
 	
 	@PostMapping("")

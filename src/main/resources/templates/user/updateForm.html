@@ -93,9 +93,9 @@ templates/include/navigation.html 에서 읽어옴 -->
 <div class="container" id="main">
    <div class="col-md-6 col-md-offset-3">
       <div class="panel panel-default content-main">
-
+    
 <!-- <form name="question" method="get" action="/user/create"> -->
-{{#user}}
+<!-- {{#user}} -->
 <form name="member_enter" method="post" 
 action="/users/{{id}}">
 <!-- html 전송방식은 get, post 만 지원한다. 
@@ -104,7 +104,7 @@ http method 은 put, delete 도 사용가능하다
   <input type="hidden" name="_method" value="put"/>  
 
   <!-- <input type="hidden" name="id" value="{{id}}"> -->  
-
+    
   <div class="form-group">
       <label for="userId">사용자 아이디</label>
       <input class="form-control" id="userId" 
@@ -132,15 +132,17 @@ http method 은 put, delete 도 사용가능하다
   </button>
   <div class="clearfix"></div>
 </form>
-{{/user}}
+<!-- {{/user}} -->
         
         </div>
     </div>
 </div>
 
-<!-- script references -->
-<script src="/js/jquery-2.2.0.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/scripts.js"></script>
+<!-- script references 
+<script src="../js/jquery-2.2.0.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/scripts.js"></script> -->
+{{> /include/footer}}
+
 	</body>
 </html>

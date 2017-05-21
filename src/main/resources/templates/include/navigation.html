@@ -63,7 +63,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <!-- <li class="active"><a href="../index.html">Posts</a></li> -->
                 <li class="active"><a href="/">Posts</a></li>
-                <li><a href="../user/login.html" role="button">로그인</a></li>
+                
+   <!-- <li><a href="../user/login.html" role="button">
+      로그인</a></li> -->
+   <!-- 4-1 로그인 기능 구현을 위해 UserController 컨트롤러와 
+      연결하고 loginForm 메소드와 url mapping -->
+   <li><a href="/users/loginForm" role="button">
+      로그인</a></li>             
                 
                 <!-- UserController 에 url mapping
                 @Controller
@@ -78,7 +84,16 @@
                 <li><a href="/users/form" role="button">회원가입</a></li>
                 
                 <li><a href="#" role="button">로그아웃</a></li>
-                <li><a href="#" role="button">회원정보수정</a></li>
+                
+                <!-- @GetMapping("/updateForm")  
+			    public String updateForm() {
+			        return "/user/updateForm";
+			    } 
+			    UserController updateForm 메소드와 매핑 -->
+                <li><a href="/users/updateForm" 
+                role="button">
+                                회원정보수정</a></li>
+                                
             </ul>
         </div>
     </div>
