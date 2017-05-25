@@ -58,7 +58,7 @@ public class UserController {
 		
 		// user 로 session 설정하여 / 루트에 리턴
 		System.out.println("Login Success!");
-		session.setAttribute("user", user);
+		session.setAttribute("sessionUser", user);
 		return "redirect:/";
 	}
 	
@@ -75,7 +75,7 @@ public class UserController {
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 	  //세션 로그인 사용자의 세션을 제거
-	  session.removeAttribute("user");
+	  session.removeAttribute("sessionUser");
 	  System.out.println("세션 제거!");
 	  return "redirect:/";
 	}
@@ -121,16 +121,32 @@ public class UserController {
 		return "/user/list";
 	}*/
 	
+	//자신만의 회원정보를 수정할 수 있도록 세션로그인 사용자, 
+	//세션로그인 사용자의 id 가 같을 때에만 updateForm 페이지로 이동  
 	//회원리스트 페이지 list.html 에서 회원정보수정을 요청
 	/*<a href="/users/{{id}}/form" 
             class="btn btn-success" 
             role="button">수정</a>*/
 	@GetMapping("/{id}/form")	
-	public String updateForm(@PathVariable long id,
-	Model model) {
+	public String updateForm(@PathVariable Long id,
+	Model model, HttpSession session) {
+	  //세션 로그인 사용자만 개인정보수정 가능 - alt+shift+r : rename 단축키
+	  User sessionedUser = (User) session.getAttribute("sessionUser");
+	  if (sessionedUser == null) {
+	    //비로그인 사용자는 로그인 페이지로 이동
+      return "redirect:/users/loginForm";
+    }
+	  System.out.println("나의~ tempUser: " + sessionedUser);
+	  
+	  //사용자의 id 가 동일하지 않을 때에는 에러 메시지 출력
+	  if (!id.equals(sessionedUser.getId())) {
+      throw new IllegalAccessError("You can edit only for your information");
+    }
+	  
 		/*model.addAttribute("user", 
 		userRepository.findOne(id));*/
 		User user = userRepository.findOne(id);
+		/*User user = userRepository.findOne(sessionedUser.getId());*/
 		model.addAttribute("user", user);
 		return "/user/updateForm";
 	}
@@ -144,11 +160,26 @@ public class UserController {
 		return "redirect:/users"; //회원목록으로 페이지이동
 	}*/
 	
-	@PutMapping("/{id}")
-	public String update(@PathVariable long id, 
-	User newUser) {
+	//자신만의 회원정보를 수정할 수 있도록 세션로그인 사용자, 
+  //세션로그인 사용자의 id 가 같을 때에만 자신의 회원정보 수정 가능 
+  @PutMapping("/{id}")
+	public String update(@PathVariable Long id, 
+	User updatedUser, HttpSession session) {
+	//세션 로그인 사용자만 개인정보수정 가능 - alt+shift+r : rename 단축키
+    User sessionedUser = (User) session.getAttribute("sessionUser");
+    if (sessionedUser == null) {
+      //비로그인 사용자는 로그인 페이지로 이동
+      return "redirect:/users/loginForm";
+    }
+    System.out.println("나의~ tempUser: " + sessionedUser);
+    
+    //사용자의 id 가 동일하지 않을 때에는 에러 메시지 출력
+    if (!id.equals(sessionedUser.getId())) {
+      throw new IllegalAccessError("You can edit only for your information");
+    }
+	  
 		User user = userRepository.findOne(id);
-		user.update(newUser);
+		user.update(updatedUser);
 		userRepository.save(user);
 		return "redirect:/users"; //회원목록으로 페이지이동
 	}

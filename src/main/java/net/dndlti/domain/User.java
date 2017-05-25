@@ -14,13 +14,15 @@ public class User {
 	
 	//숫자를 자동증가하는 방식으로 primary key 로 사용하려면
 	//@GeneratedValue 자동으로 1씩 증가
+  //데이터형 Long 을 사용해야 함 - long 타입과 동일하지 않음
 	@Id
 	@GeneratedValue
-	private long id;
+	private Long id;
 	
-	//해당 컬럼의 값은 not null 로 설정
-	//@Column default 은 true
-	@Column(nullable=false, length=400)
+	//해당 컬럼의 값은 not null 로 설정 
+	//@Column nullable default 은 true,
+	//unique 은 컬럼의 값은 유일해야 한다는 속성값 변경, default 은 false
+	@Column(nullable=false, length=400, unique=true)
 	private String userId;
 	
 	private String password;
@@ -57,4 +59,10 @@ public class User {
 		this.name = newUser.name;
 		this.email = newUser.email;
 	}
+	
+	/*4-3 자기 자신에 한 해 개인정보수정*/
+  public long getId() {
+    return id;
+  }
+  
 }
