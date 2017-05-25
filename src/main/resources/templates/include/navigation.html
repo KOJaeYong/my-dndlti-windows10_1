@@ -60,10 +60,13 @@
             </button> -->            
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse2">
-            <ul class="nav navbar-nav navbar-right">
-                <!-- <li class="active"><a href="../index.html">Posts</a></li> -->
-                <li class="active"><a href="/">Posts</a></li>
-                
+<ul class="nav navbar-nav navbar-right">
+   
+   <!-- <li class="active"><a href="../index.html">Posts</a></li> -->
+   <li class="active"><a href="/">Posts</a></li>
+   
+   <!-- 세션 로그인 사용자가 아닌 경우 메뉴 구성 변경 - 4-2 강의에서 수정 -->
+   {{^user}}  
    <!-- <li><a href="../user/login.html" role="button">
       로그인</a></li> -->
    <!-- 4-1 로그인 기능 구현을 위해 UserController 컨트롤러와 
@@ -71,29 +74,35 @@
    <li><a href="/users/loginForm" role="button">
       로그인</a></li>             
                 
-                <!-- UserController 에 url mapping
-                @Controller
-				@RequestMapping("/users")
-				public class UserController {
-                
-                @GetMapping("/form")    
-			    public String form() {
-			        return "/users/form";
-			    } 
-			    -->
-                <li><a href="/users/form" role="button">회원가입</a></li>
-                
-                <li><a href="#" role="button">로그아웃</a></li>
-                
-                <!-- @GetMapping("/updateForm")  
-			    public String updateForm() {
-			        return "/user/updateForm";
-			    } 
-			    UserController updateForm 메소드와 매핑 -->
-                <li><a href="/users/updateForm" 
-                role="button">
-                                회원정보수정</a></li>
-                                
+   <!-- UserController 에 url mapping
+   @Controller
+   @RequestMapping("/users")
+   public class UserController {
+            
+            @GetMapping("/form")    
+   public String form() {
+       return "/users/form";
+   } 
+   -->
+   <li><a href="/users/form" role="button">
+                   회원가입</a></li>
+   {{/user}}
+   
+   <!-- 4-2 강의에서 로그아웃 기능 구현 -->
+   {{#user}}
+   <li><a href="/users/logout" role="button">
+                   로그아웃</a></li>
+   
+   <!-- @GetMapping("/updateForm")  
+   public String updateForm() {
+       return "/user/updateForm";
+   } 
+   UserController updateForm 메소드와 매핑 -->
+   <li><a href="/users/updateForm" 
+   role="button">
+      회원정보수정</a></li>
+   {{/user}}                                 
+            
             </ul>
         </div>
     </div>

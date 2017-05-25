@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository 
 extends JpaRepository<User, Long> {
 	//findBy 한 다음 ctrl + space -> findByUserId
+	/*User findByUserId(String userId);*/
 	User findByUserId(String userId);
 	/*User findByPassword(String password);*/
 }

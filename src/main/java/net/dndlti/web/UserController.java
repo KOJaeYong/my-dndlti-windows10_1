@@ -56,6 +56,7 @@ public class UserController {
 			return "redirect:/users/loginForm";
 		}
 		
+		// user 로 session 설정하여 / 루트에 리턴
 		System.out.println("Login Success!");
 		session.setAttribute("user", user);
 		return "redirect:/";
@@ -70,6 +71,14 @@ public class UserController {
 		@RequestMapping("/list") list 메소드 호출
 		return "redirect:/users";
 	}*/
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+	  //세션 로그인 사용자의 세션을 제거
+	  session.removeAttribute("user");
+	  System.out.println("세션 제거!");
+	  return "redirect:/";
+	}
 	
 	//index.html 에서 회원가입 메뉴 버튼 클릭하면 
 	//templates/user/form.html 페이지로 이동
