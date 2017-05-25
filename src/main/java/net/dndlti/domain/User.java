@@ -34,8 +34,29 @@ public class User {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
 	}
 	
-	public String getPassword() {
+	/*4-3 자기 자신에 한 해 개인정보수정*/
+	//데이터형 Long 을 사용해야 함 - long 타입과 동일하지 않음
+	/*public Long getId() {
+	  return id;
+	}*/
+	
+	public boolean getId(Long newId) {
+	  if (newId == null || !newId.equals(id)) {
+	    return false;
+    }
+	  return true;
+	}
+	
+	/*public String getPassword() {
 		return password;
+	}*/
+	
+	public boolean matchPassword(String newPassword) {
+	  if (!newPassword.equals(password)
+	      ||newPassword == null) {
+	    return false;
+	  }
+	  return true;
 	}
 	
 	public void setUserId(String userId) {
@@ -60,9 +81,6 @@ public class User {
 		this.email = newUser.email;
 	}
 	
-	/*4-3 자기 자신에 한 해 개인정보수정*/
-  public long getId() {
-    return id;
-  }
+
   
 }

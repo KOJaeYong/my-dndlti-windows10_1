@@ -50,15 +50,21 @@ public class UserController {
 		if (passwd == null) {
 			return "/user/login";
 		}*/
-		if (!password.equals(user.getPassword())) {
+		/*if (!password.equals(user.getPassword())) {
 			System.out.println("Login Failure!");
-			/*return "/user/login";*/
+			return "/user/login";
 			return "redirect:/users/loginForm";
-		}
+		}*/
+		if (!user.matchPassword(password)) {
+		  System.out.println("로그인 실패");
+      return "redirect:/users/loginForm";
+    }
 		
 		// user 로 session 설정하여 / 루트에 리턴
 		System.out.println("Login Success!");
-		session.setAttribute("sessionUser", user);
+		/*session.setAttribute("sessionUser", user);*/
+		session.setAttribute(
+		HttpSessionUtils.USER_SESSION_KEY, user);
 		return "redirect:/";
 	}
 	
@@ -75,7 +81,9 @@ public class UserController {
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 	  //세션 로그인 사용자의 세션을 제거
-	  session.removeAttribute("sessionUser");
+	  /*session.removeAttribute("sessionUser");*/
+	  session.removeAttribute(
+	  HttpSessionUtils.USER_SESSION_KEY);
 	  System.out.println("세션 제거!");
 	  return "redirect:/";
 	}
@@ -131,15 +139,26 @@ public class UserController {
 	public String updateForm(@PathVariable Long id,
 	Model model, HttpSession session) {
 	  //세션 로그인 사용자만 개인정보수정 가능 - alt+shift+r : rename 단축키
-	  User sessionedUser = (User) session.getAttribute("sessionUser");
+	  /*User sessionedUser = (User) session.getAttribute("sessionUser");
 	  if (sessionedUser == null) {
 	    //비로그인 사용자는 로그인 페이지로 이동
       return "redirect:/users/loginForm";
+    }*/
+	  if (!HttpSessionUtils.isLoginUser(session)) {
+      return "redirect:/users/loginForm";
     }
-	  System.out.println("나의~ tempUser: " + sessionedUser);
+	  
+	  System.out.println(
+	  "나의~ 세션로그인 사용자인가?: " + 
+	  HttpSessionUtils.isLoginUser(session));
 	  
 	  //사용자의 id 가 동일하지 않을 때에는 에러 메시지 출력
-	  if (!id.equals(sessionedUser.getId())) {
+	  User sessionedUser = 
+	  HttpSessionUtils.getUserFromSession(session);
+	  /*if (!id.equals(sessionedUser.getId())) {
+      throw new IllegalAccessError("You can edit only for your information");
+    }*/
+	  if (!sessionedUser.getId(id)) {
       throw new IllegalAccessError("You can edit only for your information");
     }
 	  
@@ -166,29 +185,37 @@ public class UserController {
 	public String update(@PathVariable Long id, 
 	User updatedUser, HttpSession session) {
 	//세션 로그인 사용자만 개인정보수정 가능 - alt+shift+r : rename 단축키
-    User sessionedUser = (User) session.getAttribute("sessionUser");
+    /*User sessionedUser = (User) session.getAttribute("sessionUser");
     if (sessionedUser == null) {
       //비로그인 사용자는 로그인 페이지로 이동
       return "redirect:/users/loginForm";
     }
-    System.out.println("나의~ tempUser: " + sessionedUser);
+    System.out.println("나의~ tempUser: " + sessionedUser);*/
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      return "redirect:/users/loginForm";
+    }
+    
+    System.out.println(
+    "나의~ 세션로그인 사용자인가?: " + 
+    HttpSessionUtils.isLoginUser(session));
     
     //사용자의 id 가 동일하지 않을 때에는 에러 메시지 출력
-    if (!id.equals(sessionedUser.getId())) {
+    /*if (!id.equals(sessionedUser.getId())) {
+      throw new IllegalAccessError("You can edit only for your information");
+    }*/
+    //사용자의 id 가 동일하지 않을 때에는 에러 메시지 출력
+    User sessionedUser = 
+    HttpSessionUtils.getUserFromSession(session);
+    /*if (!id.equals(sessionedUser.getId())) {
+      throw new IllegalAccessError("You can edit only for your information");
+    }*/
+    if (!sessionedUser.getId(id)) {
       throw new IllegalAccessError("You can edit only for your information");
     }
-	  
-		User user = userRepository.findOne(id);
+    
+    User user = userRepository.findOne(id);
 		user.update(updatedUser);
 		userRepository.save(user);
 		return "redirect:/users"; //회원목록으로 페이지이동
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 }
