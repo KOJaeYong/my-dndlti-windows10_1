@@ -60,7 +60,7 @@ public class UserController {
       return "redirect:/users/loginForm";
     }
 		
-		// user 로 session 설정하여 / 루트에 리턴
+		// user 로 session 설정하여 / 루트로 리턴 - index.html로 이동
 		System.out.println("Login Success!");
 		/*session.setAttribute("sessionUser", user);*/
 		session.setAttribute(
@@ -104,7 +104,7 @@ public class UserController {
 	
 	@PostMapping("")
 	public String create(User user) {
-		System.out.println("user: " + user);
+		System.out.println("나의 ~ user: " + user);
 		userRepository.save(user);
 		return "redirect:/users";
 	}

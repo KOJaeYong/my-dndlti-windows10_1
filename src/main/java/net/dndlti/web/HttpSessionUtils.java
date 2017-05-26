@@ -3,7 +3,9 @@ import javax.servlet.http.HttpSession;
 import net.dndlti.domain.User;
 
 public class HttpSessionUtils {
-  //상수로 세션 키를 생성
+  //상수로 세션 키를 생성 - UserController 클래스의 login 메소드에서 사용
+  //session.setAttribute(
+  //HttpSessionUtils.USER_SESSION_KEY, user);
   public static final String USER_SESSION_KEY="sessionUser";
   
   //세션로그인 여부를 확인할 수 있는 메소드

@@ -59,6 +59,12 @@ public class User {
 	  return true;
 	}
 	
+	/* 4-5 강의에서 추가 질문하기, 질문목록 기능 구현 
+	세션로그인을 한 후 질문하기 한 회원의 userid 조회 */
+	public String getUserId() {
+    return userId;
+  }
+	
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
@@ -80,6 +86,8 @@ public class User {
 		this.name = newUser.name;
 		this.email = newUser.email;
 	}
+
+  
 	
 
   
