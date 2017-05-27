@@ -6,7 +6,11 @@
     <groupId>net.dndlti</groupId>
     <artifactId>my-dndlti</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    
+    <!-- 4-6 jar 파일 배포 형식으로는 원격서버 배포에 문제가 발생해 war 파일 
+        배포 형식으로 변경함 -->
+    <!-- <packaging>jar</packaging> -->
+    <packaging>war</packaging>
 
     <name>my-dndlti</name>
     <description>Dndlti QnA project for Spring Boot</description>
@@ -25,10 +29,18 @@
     </properties>
 
     <dependencies>
+        
+<!-- 4-6 원격 서버 배포를 내장된 웹서버를 실행, 배포 모두 가능하도록
+        범위(scope)를 provided 로 설정하는 라이브러리를 추가 -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-tomcat</artifactId>
+    <scope>provided</scope>
+</dependency>
     
         <!-- jpa 라이브러리 - 3-1 에서 추가 -->
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
-		<!-- <parent>
+		    <!-- <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.5.3.RELEASE</version>
