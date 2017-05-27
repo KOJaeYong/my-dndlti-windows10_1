@@ -57,8 +57,11 @@ public class QuestionController {
     public String getUserId() {
       return userId;
     } */
+    /*Question newQuestion = new Question(
+    sessionUser.getUserId(), title, contents);*/
+    //가급적 User 객체를 사용하여 질문하기의 writer 입력란을 작성하도록 수정
     Question newQuestion = new Question(
-    sessionUser.getUserId(), title, contents);
+    sessionUser, title, contents);
     
     questionRepository.save(newQuestion);
     

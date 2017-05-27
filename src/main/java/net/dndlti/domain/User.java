@@ -23,8 +23,7 @@ public class User {
 	//@Column nullable default 은 true,
 	//unique 은 컬럼의 값은 유일해야 한다는 속성값 변경, default 은 false
 	@Column(nullable=false, length=400, unique=true)
-	private String userId;
-	
+	private String userId; //User 테이블의 Userid
 	private String password;
 	private String name;
 	private String email;
