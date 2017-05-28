@@ -94,7 +94,11 @@ templates/include/navigation.html 에서 읽어옴 -->
     <div class="wrap">
         <div class="main">
             <strong class="subject">
-                <a href="./qna/show.html">{{title}}</a>
+            
+                <!-- 질문(하기)의 상세보기 5-2 에서 수정 -->
+                <!-- <a href="./qna/show.html">{{title}}</a> -->
+                <a href="/questions/{{id}}">{{title}}</a>
+                
             </strong>
             <div class="auth-info">
                 <i class="icon-add-comment"></i>

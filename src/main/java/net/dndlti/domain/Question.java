@@ -73,4 +73,10 @@ public class Question {
     return createDate.format(
     DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
   }
+  
+  //질문을 입력한 작성자가 질문 내용 수정
+  public void update(String title, String contents) {
+    this.title = title;
+    this.contents = contents;
+  }
 }
