@@ -21,7 +21,7 @@ import net.dndlti.domain.User;
 @RequestMapping("/questions")
 public class QuestionController {
   
-  //데이터베이스 테이블과의 연동
+  //QuestionRepository 인터페이스는 데이터베이스 테이블 Question 과 연동한다.
   //@Autowired 어노테이션은 
   //스프링에서 자동으로 의존관계를 타입에 맞춰서 연결하도록 시킴
   //Marks a constructor, field, setter method or 
@@ -81,19 +81,52 @@ public class QuestionController {
   }
   
   //질문 수정 폼으로 이동
+  //-- 세션 로그인한 질문 작성자만이 질문 수정하도록 구현
   @GetMapping("/{id}/form")
   public String updateForm(
-  @PathVariable Long id, Model model) {
-    model.addAttribute(
-    "question", questionRepository.findOne(id));
+  @PathVariable Long id, Model model, HttpSession session) {
+    //세션로그인 여부를 확인할 수 있는 메소드
+    System.out.println(
+    "나의 ~ !HttpSessionUtils.isLoginUser(session): " 
+    + !HttpSessionUtils.isLoginUser(session));
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      return "redirect:/users/loginForm";
+    }
+    //세션로그인을 한 User 객체인지를 확인
+    User loginUser = 
+    HttpSessionUtils.getUserFromSession(session);
+    
+    Question question = questionRepository.findOne(id);
+    System.out.println(
+    "나의 ~ !question.isSameWriter(loginUser): " 
+    + !question.isSameWriter(loginUser));
+    if (!question.isSameWriter(loginUser)) {
+      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      return "redirect:/users/loginForm";
+    }
+    model.addAttribute("question", question);
     return "/qna/updateForm";
   }
   
-  //질문 수정을 한 후 해당 질문이 표시되도록 페이지 이동
+  //질문 수정을 한 후 해당 질문이 표시되도록 페이지 이동 
+  //로그인 사용자중에 질문 작성자만이 질문 수정할 수 있도록 구현
   @PutMapping("/{id}")
   public String update(
-  @PathVariable Long id, String title, String contents) {
+  @PathVariable Long id, String title, String contents,
+  HttpSession session) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      return "redirect:/users/loginForm";
+    }
+    User loginUser = 
+    HttpSessionUtils.getUserFromSession(session);
     Question question = questionRepository.findOne(id);
+    if (!question.isSameWriter(loginUser)) {
+      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      return "redirect:/users/loginForm";
+    }
+    
     question.update(title, contents);
     questionRepository.save(question);
     return String.format("redirect:/questions/%d", id);
@@ -101,7 +134,19 @@ public class QuestionController {
   
   //질문 작성자가 질문 삭제 
   @DeleteMapping("/{id}")
-  public String delete(@PathVariable Long id) {
+  public String delete(@PathVariable Long id,
+  HttpSession session) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      return "redirect:/users/loginForm";
+    }
+    User loginUser = HttpSessionUtils.getUserFromSession(session);
+    Question question = questionRepository.findOne(id);
+    if (!question.isSameWriter(loginUser)) {
+      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      return "redirect:/users/loginForm";
+    }
+    
     questionRepository.delete(id);
     return "redirect:/";
   }

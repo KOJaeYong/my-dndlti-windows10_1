@@ -33,13 +33,49 @@ public class User {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
 	}
 	
+	/*Question 클래스에 있는 isSameWriter(User loginUser) 메소드에 있는
+	 * writer.equals(loginUser) - 
+	 * equals() 메소드를 사용하여 정확한 결과가 나오도록  
+	 * hashCode(), equals() 메소드를  override 하여 추가
+	public boolean isSameWriter(User loginUser) {
+    return this.writer.equals(loginUser);
+  }
+  */
+	//equals 메소드를 사용하기 위한 hashCode(), equals() 메소드 추가
+	//Alt+Shift+S - Generate hashcode() and equals() 선택하고
+	//id 만 체크하고 finish
+	@Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    User other = (User) obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+    return true;
+  }
+	
 	/*4-3 자기 자신에 한 해 개인정보수정*/
 	//데이터형 Long 을 사용해야 함 - long 타입과 동일하지 않음
 	/*public Long getId() {
 	  return id;
 	}*/
 	
-	public boolean getId(Long newId) {
+  public boolean getId(Long newId) {
 	  if (newId == null || !newId.equals(id)) {
 	    return false;
     }
@@ -55,7 +91,7 @@ public class User {
 	      ||newPassword == null) {
 	    return false;
 	  }
-	  return true;
+	  return newPassword.equals(password);
 	}
 	
 	/* 4-5 강의에서 추가 질문하기, 질문목록 기능 구현 
