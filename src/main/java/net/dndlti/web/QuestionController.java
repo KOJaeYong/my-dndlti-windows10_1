@@ -83,14 +83,14 @@ public class QuestionController {
   //질문 수정 폼으로 이동
   //-- 세션 로그인한 질문 작성자만이 질문 수정하도록 구현
   @GetMapping("/{id}/form")
-  public String updateForm(
-  @PathVariable Long id, Model model, HttpSession session) {
+  public String updateForm(@PathVariable Long id, 
+  Model model, HttpSession session) {
     //세션로그인 여부를 확인할 수 있는 메소드
-    System.out.println(
+    /*System.out.println(
     "나의 ~ !HttpSessionUtils.isLoginUser(session): " 
     + !HttpSessionUtils.isLoginUser(session));
     if (!HttpSessionUtils.isLoginUser(session)) {
-      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정
       return "redirect:/users/loginForm";
     }
     //세션로그인을 한 User 객체인지를 확인
@@ -102,11 +102,40 @@ public class QuestionController {
     "나의 ~ !question.isSameWriter(loginUser): " 
     + !question.isSameWriter(loginUser));
     if (!question.isSameWriter(loginUser)) {
-      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정
       return "redirect:/users/loginForm";
     }
     model.addAttribute("question", question);
-    return "/qna/updateForm";
+    return "/qna/updateForm";*/
+    
+    try {
+      Question question = questionRepository.findOne(id);
+      hasPermission(session, question);
+      model.addAttribute("question", question);
+      return "/qna/updateForm";
+    } catch (IllegalStateException e) {
+      model.addAttribute("errorMessage", e.getMessage());
+      //동일한 주소로 이동하지만 자원 include 경로 수정 필요 
+      return "/user/login";
+      /*return "redirect:/users/loginForm";*/
+    }
+  }
+  
+  //질문을 작성할 권한이 있지 않으면 예외처리 하는 방식으로 중복 코드 제거 리팩토링
+  private boolean hasPermission(HttpSession session,
+  Question question) {
+    //로그인 사용자가 아니라면
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      throw new IllegalStateException("로그인이 필요합니다.");
+    }
+    //질문을 작성한 로그인 사용자와 동일인이 아니라면 질문 수정, 삭제 불가
+    User loginUser = 
+    HttpSessionUtils.getUserFromSession(session);
+    if (!question.isSameWriter(loginUser)) {
+      throw new IllegalStateException(
+      "자신이 쓴 글만 수정, 삭제가 가능합니다.");
+    }
+    return true;
   }
   
   //질문 수정을 한 후 해당 질문이 표시되도록 페이지 이동 
@@ -114,40 +143,66 @@ public class QuestionController {
   @PutMapping("/{id}")
   public String update(
   @PathVariable Long id, String title, String contents,
-  HttpSession session) {
-    if (!HttpSessionUtils.isLoginUser(session)) {
-      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+  Model model, HttpSession session) {
+    /*if (!HttpSessionUtils.isLoginUser(session)) {
+      css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정
       return "redirect:/users/loginForm";
     }
     User loginUser = 
     HttpSessionUtils.getUserFromSession(session);
     Question question = questionRepository.findOne(id);
     if (!question.isSameWriter(loginUser)) {
-      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정
       return "redirect:/users/loginForm";
     }
     
     question.update(title, contents);
     questionRepository.save(question);
-    return String.format("redirect:/questions/%d", id);
+    return String.format("redirect:/questions/%d", id);*/
+    
+    try {
+      Question question = questionRepository.findOne(id);
+      hasPermission(session, question);
+      question.update(title, contents);
+      questionRepository.save(question);
+      return String.format("redirect:/questions/%d", id);
+    } catch (IllegalStateException e) {
+      model.addAttribute("errorMessage", e.getMessage());
+      //동일한 주소로 이동하지만 자원 include 경로 수정 필요 
+      return "/user/login";
+      /*return "redirect:/users/loginForm";*/
+    }
   }
   
-  //질문 작성자가 질문 삭제 
+  //질문 작성자만 질문 삭제 
   @DeleteMapping("/{id}")
   public String delete(@PathVariable Long id,
-  HttpSession session) {
-    if (!HttpSessionUtils.isLoginUser(session)) {
-      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+  Model model, HttpSession session) {
+    /*if (!HttpSessionUtils.isLoginUser(session)) {
+      css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정
       return "redirect:/users/loginForm";
     }
     User loginUser = HttpSessionUtils.getUserFromSession(session);
     Question question = questionRepository.findOne(id);
     if (!question.isSameWriter(loginUser)) {
-      /*css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정*/
+      css,js,bootstrap,jquery 등의 자원을 제대로 읽어오기 위해 수정
       return "redirect:/users/loginForm";
     }
     
     questionRepository.delete(id);
-    return "redirect:/";
+    return "redirect:/";*/
+    
+    try {
+      Question question = questionRepository.findOne(id);
+      hasPermission(session, question);
+      questionRepository.delete(id);
+      return "redirect:/";
+    } catch (IllegalStateException e) {
+      model.addAttribute("errorMessage", e.getMessage());
+      //동일한 주소로 이동하지만 자원 include 경로 수정 필요 
+      return "/user/login";
+      /*return "redirect:/users/loginForm";*/
+    }
+    
   }
 }
