@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.dndlti.domain.Question;
 import net.dndlti.domain.QuestionRepository;
+import net.dndlti.domain.Result;
 import net.dndlti.domain.User;
 
 //컨트롤러 역할을 하는 클래스
@@ -108,7 +109,8 @@ public class QuestionController {
     model.addAttribute("question", question);
     return "/qna/updateForm";*/
     
-    try {
+    /*5-6. 첫번째 QuestionController 중복 코드 제거 리팩토링*/ 
+    /*try {
       Question question = questionRepository.findOne(id);
       hasPermission(session, question);
       model.addAttribute("question", question);
@@ -117,12 +119,39 @@ public class QuestionController {
       model.addAttribute("errorMessage", e.getMessage());
       //동일한 주소로 이동하지만 자원 include 경로 수정 필요 
       return "/user/login";
-      /*return "redirect:/users/loginForm";*/
+      return "redirect:/users/loginForm";
+    }*/
+    /*5-6. 두번째 QuestionController 중복 코드 제거 리팩토링*/
+    Question question = questionRepository.findOne(id);
+    Result result = valid(session,question);
+    if (!result.isValid()) {
+      model.addAttribute(
+      "errorMessage", result.getErrorMessage());
+      return "/user/login";
     }
+    
+    model.addAttribute("question", question);
+    return "/qna/updateForm";
   }
   
-  //질문을 작성할 권한이 있지 않으면 예외처리 하는 방식으로 중복 코드 제거 리팩토링
-  private boolean hasPermission(HttpSession session,
+  private Result valid(HttpSession session,
+  Question question) {
+    //로그인 사용자가 아니라면
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      return Result.fail("로그인이 필요합니다");
+    }
+    //질문을 작성한 로그인 사용자와 동일인이 아니라면 질문 수정, 삭제 불가
+    User loginUser = 
+    HttpSessionUtils.getUserFromSession(session);
+    if (!question.isSameWriter(loginUser)) {
+      return Result.fail("자신이 쓴 글만 수정, 삭제가 가능합니다.");
+    }
+    return Result.ok();
+  }
+  
+  //질문을 작성할 권한이 있지 않으면 예외처리를 하여 에러메시지를 전송하는 
+  //방식으로 중복 코드 제거 리팩토링
+  /*private boolean hasPermission(HttpSession session,
   Question question) {
     //로그인 사용자가 아니라면
     if (!HttpSessionUtils.isLoginUser(session)) {
@@ -136,7 +165,7 @@ public class QuestionController {
       "자신이 쓴 글만 수정, 삭제가 가능합니다.");
     }
     return true;
-  }
+  }*/
   
   //질문 수정을 한 후 해당 질문이 표시되도록 페이지 이동 
   //로그인 사용자중에 질문 작성자만이 질문 수정할 수 있도록 구현
@@ -160,7 +189,8 @@ public class QuestionController {
     questionRepository.save(question);
     return String.format("redirect:/questions/%d", id);*/
     
-    try {
+    /*5-6. 첫번째 QuestionController 중복 코드 제거 리팩토링*/
+    /*try {
       Question question = questionRepository.findOne(id);
       hasPermission(session, question);
       question.update(title, contents);
@@ -170,8 +200,19 @@ public class QuestionController {
       model.addAttribute("errorMessage", e.getMessage());
       //동일한 주소로 이동하지만 자원 include 경로 수정 필요 
       return "/user/login";
-      /*return "redirect:/users/loginForm";*/
+      return "redirect:/users/loginForm";
+    }*/
+    
+    /*5-6. 두번째 QuestionController 중복 코드 제거 리팩토링*/
+    Question question = questionRepository.findOne(id);
+    Result result = valid(session, question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "/user/login";
     }
+    question.update(title,contents);
+    questionRepository.save(question);
+    return String.format("redirect:/questions/%d", id);
   }
   
   //질문 작성자만 질문 삭제 
@@ -192,7 +233,8 @@ public class QuestionController {
     questionRepository.delete(id);
     return "redirect:/";*/
     
-    try {
+    /*5-6. 첫번째 QuestionController 중복 코드 제거 리팩토링*/
+    /*try {
       Question question = questionRepository.findOne(id);
       hasPermission(session, question);
       questionRepository.delete(id);
@@ -201,8 +243,17 @@ public class QuestionController {
       model.addAttribute("errorMessage", e.getMessage());
       //동일한 주소로 이동하지만 자원 include 경로 수정 필요 
       return "/user/login";
-      /*return "redirect:/users/loginForm";*/
-    }
+      return "redirect:/users/loginForm";
+    }*/
     
+    /*5-6. 두번째 QuestionController 중복 코드 제거 리팩토링*/
+    Question question = questionRepository.findOne(id);
+    Result result = valid(session,question);
+    if (!result.isValid()) {
+      model.addAttribute("errorMessage", result.getErrorMessage());
+      return "/user/login";
+    }
+    questionRepository.delete(id);
+    return "redirect:/";
   }
 }
