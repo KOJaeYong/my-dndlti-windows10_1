@@ -3,10 +3,10 @@ package net.dndlti.web;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import net.dndlti.domain.Answer;
 import net.dndlti.domain.AnswerRepository;
@@ -14,9 +14,11 @@ import net.dndlti.domain.Question;
 import net.dndlti.domain.QuestionRepository;
 import net.dndlti.domain.User;
 
-@Controller
-@RequestMapping("/questions/{questionId}/answers")
-public class AnswerController {
+//Json 데이터를 처리할 수 있는 컨트롤러로 지정하기 위해 
+//@RestController 어노테이션 사용
+@RestController
+@RequestMapping("/api/questions/{questionId}/answers")
+public class ApiAnswerController {
   
   //AnswerRepository 인터페이스는 데이터베이스 테이블 Answer 와 연동한다.
   //@Autowired 어노테이션은 
@@ -31,17 +33,33 @@ public class AnswerController {
   public QuestionRepository questionRepository;
   
   @PostMapping("")
+  public Answer create(@PathVariable Long questionId, 
+  String contents, HttpSession session) {
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      return null;
+    }
+    User loginUser = 
+    HttpSessionUtils.getUserFromSession(session);
+    Question question = questionRepository.findOne(questionId);
+    Answer answer = new Answer(loginUser, question, contents);
+    return answerRepository.save(answer);
+  }
+  
+  /* 6-1 Ajax 를 활용한 답변 추가 1 에서 주석처리
+  @PostMapping("")
   public String create(@PathVariable Long questionId,
   String contents, HttpSession session) {
     if (!HttpSessionUtils.isLoginUser(session)) {
-      /*이 코드는 다음과 같은 오류가 발생한다.
+      이 코드는 다음과 같은 오류가 발생한다.
       There was an unexpected error 
       (type=Method Not Allowed, status=405).
-      Request method 'POST' not supported*/
-      /*return "/users/loginForm";*/
+      Request method 'POST' not supported
+      return "/users/loginForm";
       
       //위의 오류 해결하기 위해 수정 
       return "redirect:/users/loginForm";
+      6-1. Ajax 를 활용한 답변 추가 1 에서 수정
+      return "/user/login";
     }
     User loginUser = 
     HttpSessionUtils.getUserFromSession(session);
@@ -59,5 +77,5 @@ public class AnswerController {
     
     return String.format("redirect:/questions/%d", 
     questionId);
-  }
+  }*/
 }

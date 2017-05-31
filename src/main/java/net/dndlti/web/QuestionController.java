@@ -75,7 +75,8 @@ public class QuestionController {
   }
   
   @GetMapping("/{id}")
-  public String show(@PathVariable Long id, Model model) {
+  public String show(@PathVariable Long id, 
+  Model model) {
     model.addAttribute(
     "question", questionRepository.findOne(id));
     return "/qna/show";
@@ -122,7 +123,8 @@ public class QuestionController {
       return "redirect:/users/loginForm";
     }*/
     /*5-6. 두번째 QuestionController 중복 코드 제거 리팩토링*/
-    Question question = questionRepository.findOne(id);
+    Question question = 
+    questionRepository.findOne(id);
     Result result = valid(session,question);
     if (!result.isValid()) {
       model.addAttribute(
@@ -204,15 +206,18 @@ public class QuestionController {
     }*/
     
     /*5-6. 두번째 QuestionController 중복 코드 제거 리팩토링*/
-    Question question = questionRepository.findOne(id);
+    Question question = 
+    questionRepository.findOne(id);
     Result result = valid(session, question);
     if (!result.isValid()) {
-      model.addAttribute("errorMessage", result.getErrorMessage());
+      model.addAttribute(
+      "errorMessage", result.getErrorMessage());
       return "/user/login";
     }
     question.update(title,contents);
     questionRepository.save(question);
-    return String.format("redirect:/questions/%d", id);
+    return String.format(
+    "redirect:/questions/%d", id);
   }
   
   //질문 작성자만 질문 삭제 
@@ -247,10 +252,12 @@ public class QuestionController {
     }*/
     
     /*5-6. 두번째 QuestionController 중복 코드 제거 리팩토링*/
-    Question question = questionRepository.findOne(id);
+    Question question = 
+    questionRepository.findOne(id);
     Result result = valid(session,question);
     if (!result.isValid()) {
-      model.addAttribute("errorMessage", result.getErrorMessage());
+      model.addAttribute(
+      "errorMessage", result.getErrorMessage());
       return "/user/login";
     }
     questionRepository.delete(id);

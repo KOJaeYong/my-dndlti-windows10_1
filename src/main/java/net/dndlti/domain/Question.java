@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //데이터베이스와 연동하는 클래스라는 것을 표시하기 위해 
 //@Entity어노테이션 사용 
 //클래스 이름으로 H2 데이터베이스의 Question 테이블 생성됨 
@@ -27,6 +29,7 @@ public class Question {
   //데이터형 Long 을 사용해야 함 - long 타입과 동일하지 않음
   @Id
   @GeneratedValue
+  @JsonProperty
   private Long id;
   
   //User 객체와 관계를 맺기 위해 필드 생성
@@ -38,13 +41,16 @@ public class Question {
   @ManyToOne
   @JoinColumn(foreignKey=
   @ForeignKey(name="fk_question_writer"))
+  @JsonProperty
   private User writer;
   /*private String writer;*/
   
+  @JsonProperty
   private String title;
   
   //질문 작성 내용을 저장하는 데이터 형식을 CLOB 로 설정 
   @Lob
+  @JsonProperty
   private String contents;
   
   /*5-1 질문하기 입력 시간을 표시하는 컬럼 추가*/

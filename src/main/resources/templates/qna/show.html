@@ -2,7 +2,54 @@
 <html lang="kr">
 <head>
 {{> /include/header}}
-    
+
+<script type="text/javascript">
+	//start with initializing nn4
+	var nn4 = (navigator.appName.indexOf("Netscape") > -1 && navigator.appVersion
+			.indexOf("4") > -1) ? true : false;
+
+	function addP(e, ta) { // e event object passed for NN4, ta is the textarea
+		var characterCode;
+
+		if (e && e.which) { //get event object reference and code property for each browser
+			e = e;
+			characterCode = e.which;
+		} else {
+			e = event;
+			characterCode = e.keyCode;
+		}
+
+		if (characterCode == 13) {
+			if (nn4) {
+				ta.value += "<br>%0D%0A"; //encoding for \r\n must be manually entered 
+				ta.value = unescape(ta.value); //must be unescaped in order for returns to be rendered inside textarea in real time
+				ta.select();
+				ta.focus(); //the select + focus combo forces NN4 to place cursor at end of string
+				return false;
+			} else { //IE
+				ta.value += "<br>"; //simply add break tag when carriage return is pressed
+				return true;
+			}
+		} else if (characterCode == 8 && !document.getElementById) { //if backspace pressed (NN4) and browser is not NN6   
+		//IE ignores clause because this function is called onKeyPress & non alphanmerc backspace requires keydown or keyup
+			ta.value = ta.value.substring(0, ta.value.length - 1); // unselect string & chop off last entered character
+			ta.select();
+			ta.focus(); //reselect & focus to force correct cursor insertion point
+			return false;
+		} else { //if any other character is pressed
+			if (nn4) {
+				ta.value += String.fromCharCode(characterCode);
+				//NN4 renders key/character codes so they must be converted back to plain language values for display using fromCharCode method
+				ta.select();
+				ta.focus();
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+</script>
+
 </head>
 <body>
 {{> /include/navigation}}
@@ -65,10 +112,10 @@
     </div>
 </article>
 
-              <div class="qna-comment">
-                  <div class="qna-comment-slipp">
-                      <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
-                      <div class="qna-comment-slipp-articles">
+<div class="qna-comment">
+    <div class="qna-comment-slipp">
+        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+        <div class="qna-comment-slipp-articles">
                           
    {{#answers}}
    <article class="article" id="answer-1405">
@@ -85,39 +132,60 @@
                </a>
            </div>
        </div>
+       
        <div class="article-doc comment-doc">
-           <p>{{contents}}</p>
+           <p>
+           {{contents}}
+           </p>
        </div>
-       <div class="article-util">
-           <ul class="article-util-list">
-               <li>
-                   <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
-               </li>
-               <li>
-                   <form class="delete-answer-form" action="/questions/413/answers/1405" method="POST">
-                       <input type="hidden" name="_method" value="DELETE">
-                       <button type="submit" class="delete-answer-button">삭제</button>
-                   </form>
-               </li>
-           </ul>
-       </div>
+       
+<div class="article-util">
+  <ul class="article-util-list">
+      <li>
+          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+      </li>
+      
+      <li>
+          <form class="delete-answer-form" 
+          action="/questions/413/answers/1405" method="POST">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" 
+              class="delete-answer-button">삭제</button>
+          </form>
+      </li>
+      
+  </ul>
+</div>
+       
    </article>
    {{/answers}}
 
 <!-- 입력한 답변 내용을 컨트롤러로 전송 -->                           
-<form class="submit-write" method="post" action="/questions/{{id}}/answers">
+<form class="answer-write" method="post" 
+action="/api/questions/{{id}}/answers">
     <div class="form-group" style="padding:14px;">
-        <!-- <textarea class="form-control" placeholder="Update your status"></textarea> -->
-        <textarea class="form-control" 
+    
+        <!-- <textarea class="form-control" 
+        placeholder="Update your status"></textarea> -->
+        <!-- <textarea class="form-control" rows="5"
+        placeholder="당신의 답변을 입력하세요." name="contents" 
+        onkeyPress="return addP(event,this)"></textarea> -->
+        <textarea class="form-control" rows="5"
         placeholder="당신의 답변을 입력하세요." name="contents"></textarea>
+    
     </div>
-    <button class="btn btn-success pull-right" type="submit">답변하기</button>
+    
+    <!-- <button class="btn btn-success pull-right" 
+    type="submit">답변하기</button> -->
+    <input type="submit" class="btn btn-success pull-right"
+    value="답변하기"/>
     <div class="clearfix"></div>
 </form>
                           
                       </div>
                   </div>
               </div>
+              
           </div>
         </div>
         {{/question}}

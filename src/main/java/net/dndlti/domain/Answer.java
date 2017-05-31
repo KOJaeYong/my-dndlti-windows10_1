@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //데이터베이스와 연동하는 클래스라는 것을 표시하기 위해 
 //@Entity어노테이션 사용 
 //클래스 이름으로 H2 데이터베이스의 Answer 테이블 생성됨 
@@ -22,8 +24,10 @@ public class Answer {
   //id 컬럼을 primary key 로 사용하고 숫자를 자동증가하는 방식으로 타입 설정  
   //@GeneratedValue - 자동으로 1씩 증가
   //데이터형 Long 을 사용해야 함 - long 타입과 동일하지 않음
+  //@JsonProperty 은 해당 정보를 Json 데이터로 전송 가능하도록 설정
   @Id
   @GeneratedValue
+  @JsonProperty
   private Long id;
   
   //User 객체와 관계를 맺기 위해 필드 생성
@@ -35,6 +39,7 @@ public class Answer {
   @ManyToOne
   @JoinColumn(
   foreignKey = @ForeignKey(name="fk_answer_writer"))
+  @JsonProperty
   private User writer;
   
   //하나의 질문(question) 에는 여러 개의 답변(answer)이 달리기 때문에
@@ -46,10 +51,12 @@ public class Answer {
   @ManyToOne
   @JoinColumn(
   foreignKey=@ForeignKey(name="fk_answer_to_question"))
+  @JsonProperty
   private Question question;
   
   //질문 작성 내용을 저장하는 데이터 형식을 CLOB 로 설정 
   @Lob
+  @JsonProperty
   private String contents;
   
   /*5-1 질문하기 입력 시간을 표시하는 컬럼 추가*/
@@ -77,7 +84,12 @@ public class Answer {
   String contents) {
     this.writer = writer;
     this.question = questionId;
+    
+    contents = contents.replace("  ", "&nbsp;&nbsp;");
+    contents = contents.replaceAll("\r\n", "<br/>");
+    /*contents = contents.replaceAll("\r", "<br/>");*/
     this.contents = contents;
+    
     this.createDate = LocalDateTime.now();
   }
 
