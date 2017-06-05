@@ -53,6 +53,10 @@ public class Question {
   @JsonProperty
   private String contents;
   
+  /*6-4 질문 목록에 답변 수 보여주기 - 초기값 0 으로 설정 */
+  @JsonProperty
+  private Integer countOfAnswer=0;
+  
   /*5-1 질문하기 입력 시간을 표시하는 컬럼 추가*/
   //LocalDateTime - Java 1.8 부터 지원하는 
   //다수의 스레드들로부터 안전하게 접근할 수 있고 변경이 불가능한 final class
@@ -109,10 +113,20 @@ public class Question {
   }
 
   public boolean isSameWriter(User loginUser) {
-    //User 인스턴스 객체 writer 와 
+    //User 인스턴스 객체 writer 필드와 
     //User 인스턴스 객체 loginUser 가 같은 객체에 해당하는가
     //결과가 false 가 나올 경우 해당 클래스(User 클래스) 내부에 
     //hashCode(), equals() 메소드를 재정의해야 한다.
     return this.writer.equals(loginUser);
   }
+  
+  /*질문에 대한 답변 추가될 때마다 - +1씩 증가*/
+  public void addAnswer() {
+    this.countOfAnswer +=1;
+  }
+  /*질문에 대한 답변 추가될 때마다 - -1씩 증가*/
+  public void deleteAnswer() {
+    this.countOfAnswer -=1;
+  }
+  
 }

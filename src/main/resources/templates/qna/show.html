@@ -3,7 +3,7 @@
 <head>
 {{> /include/header}}
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	//start with initializing nn4
 	var nn4 = (navigator.appName.indexOf("Netscape") > -1 && navigator.appVersion
 			.indexOf("4") > -1) ? true : false;
@@ -48,7 +48,7 @@
 			}
 		}
 	}
-</script>
+</script> -->
 
 </head>
 <body>
@@ -114,7 +114,7 @@
 
 <div class="qna-comment">
     <div class="qna-comment-slipp">
-        <p class="qna-comment-count"><strong>2</strong>개의 의견</p>
+        <p class="qna-comment-count"><strong>{{countOfAnswer}}</strong>개의 의견</p>
         <div class="qna-comment-slipp-articles">
                           
    {{#answers}}
@@ -142,16 +142,26 @@
 <div class="article-util">
   <ul class="article-util-list">
       <li>
-          <a class="link-modify-article" href="/questions/413/answers/1405/form">수정</a>
+          <a class="link-modify-article" 
+          href="/questions/413/answers/1405/form">수정</a>
       </li>
       
       <li>
-          <form class="delete-answer-form" 
+          <!-- <form class="delete-answer-form" 
           action="/questions/413/answers/1405" method="POST">
               <input type="hidden" name="_method" value="DELETE">
               <button type="submit" 
               class="delete-answer-button">삭제</button>
-          </form>
+          </form> -->
+          <!-- 질문에 답변한 세션로그인 사용자만이 삭제 가능
+          api: Ajax API 사용
+                    해당 답변 글의 url: 
+          /questions/{{question.id}}/answers/{{id}} -->
+          <!-- ajax 로 페이지 일부분만 삭제하기 위하여 가장 가까이 있는 article 를 
+                    웹 페이지에서 제거한다. -->
+          <a class="link-delete-article" 
+          href="/api/questions/{{question.id}}/answers/{{id}}">
+                    삭제</a>questions{{question.id}}, answers{{id}}
       </li>
       
   </ul>
@@ -209,16 +219,17 @@ action="/api/questions/{{id}}/answers">
 		</div>
 		<div class="article-util">
 		<ul class="article-util-list">
-			<li>
-				<a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
+			
+      <li>
+				<a class="link-modify-article" 
+        href="/api/qna/updateAnswer/{5}">수정</a>
 			</li>
 			<li>
-				<form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
-					<input type="hidden" name="_method" value="DELETE">
-                     <button type="submit" class="delete-answer-button">삭제</button>
-				</form>
-			</li>
-		</ul>
+        <a class="link-delete-article" 
+        href="/api/questions/{3}/answers/{4}">삭제</a>
+      </li>
+		
+    </ul>
 		</div>
 	</article>
 </script>

@@ -57,9 +57,42 @@ data를 전송받았지만 다른 data 들은 getter 메소드가
 	
 	//answer-write 라는 class 이름을 가진 form 태그의 
 	//하위의 textarea 태그의 내용을 공백처리
-	$(".answer-write textarea").val("");
+	/*$(".answer-write textarea").val("");*/
 	//기능 동일
-	/*$("textarea[name=contents]").val("");*/
+	$("textarea[name=contents]").val("");
+}
+
+/*답변 삭제 기능 구현*/
+$("a.link-delete-article").click(deleteAnswer);
+function deleteAnswer(e) {
+	/*이벤트 기능 제거*/
+	e.preventDefault();
+	
+	//$(this) - deleteAnswer 함수가 발생한 이벤트 객체(e)
+	var deleteBtn = $(this);
+	var url = deleteBtn.attr("href");
+	console.log("url: " + url);
+	
+	$.ajax({
+		type: 'delete',
+		url: url,
+		dataType: 'json',
+		error: function(xhr,status) {
+			console.log("error 발생함");
+		},
+		success: function(data,status) {
+			console.log(data);
+			if(data.valid) {
+			   //함수 외부에서 생성된 $(this) 를 
+			   //함수 내부에서 사용하면 동일한 객체를 지칭하지 않는다.
+			   /*$(this).closest("article").remove();*/
+			   //closest: 가장 가까운 article html 태그를 의미	
+			   deleteBtn.closest("article").remove();	 
+			} else {
+				alert(data.errorMessage);
+			}
+		}
+	});
 }
 
 String.prototype.format = function() {

@@ -3,6 +3,7 @@ package net.dndlti.web;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import net.dndlti.domain.Answer;
 import net.dndlti.domain.AnswerRepository;
 import net.dndlti.domain.Question;
 import net.dndlti.domain.QuestionRepository;
+import net.dndlti.domain.Result;
 import net.dndlti.domain.User;
 
 //Json 데이터를 처리할 수 있는 컨트롤러로 지정하기 위해 
@@ -19,6 +21,9 @@ import net.dndlti.domain.User;
 @RestController
 @RequestMapping("/api/questions/{questionId}/answers")
 public class ApiAnswerController {
+  
+  @Autowired
+  public QuestionRepository questionRepository;
   
   //AnswerRepository 인터페이스는 데이터베이스 테이블 Answer 와 연동한다.
   //@Autowired 어노테이션은 
@@ -29,9 +34,6 @@ public class ApiAnswerController {
   @Autowired
   public AnswerRepository answerRepository; 
   
-  @Autowired
-  public QuestionRepository questionRepository;
-  
   @PostMapping("")
   public Answer create(@PathVariable Long questionId, 
   String contents, HttpSession session) {
@@ -41,7 +43,12 @@ public class ApiAnswerController {
     User loginUser = 
     HttpSessionUtils.getUserFromSession(session);
     Question question = questionRepository.findOne(questionId);
+    
     Answer answer = new Answer(loginUser, question, contents);
+    
+    /*질문 목록에 답변 수 보여주기를 할 메소드 추가*/
+    question.addAnswer();
+    
     return answerRepository.save(answer);
   }
   
@@ -78,4 +85,31 @@ public class ApiAnswerController {
     return String.format("redirect:/questions/%d", 
     questionId);
   }*/
+  
+  //세션 로그인 한 사용자가 자신이 쓴 글을 삭제하는 기능 구현
+  @DeleteMapping("/{id}")
+  public Result delete(@PathVariable Long questionId, 
+  @PathVariable Long id, HttpSession session) {
+    System.out.println("deleteMapping ~ questionId: " 
+    + questionId + ", id: " + id);
+    if (!HttpSessionUtils.isLoginUser(session)) {
+      return Result.fail("로그인해야 합니다.");
+    }
+    Answer answer = answerRepository.findOne(id);
+    User loginUser = 
+    HttpSessionUtils.getUserFromSession(session);
+    if (!answer.isSameWriter(loginUser)) {
+      return Result.fail("자신의 글만 삭제할 수 있습니다.");
+    }
+    answerRepository.delete(id);
+    /*Question question = questionRepository.findOne(questionId);
+    questionRepository.save(question);*/
+    
+    /*질문에 대한 답변을 삭제할 때마다 -1씩 감소*/ 
+    Question question = questionRepository.findOne(questionId);
+    question.deleteAnswer();
+    questionRepository.save(question);
+    
+    return Result.ok();
+  }
 }

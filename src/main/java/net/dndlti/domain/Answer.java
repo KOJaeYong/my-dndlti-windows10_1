@@ -59,11 +59,6 @@ public class Answer {
   @JsonProperty
   private String contents;
   
-  /*5-1 질문하기 입력 시간을 표시하는 컬럼 추가*/
-  //LocalDateTime - Java 1.8 부터 지원하는 
-  //다수의 스레드들로부터 안전하게 접근할 수 있고 변경이 불가능한 final class
-  private LocalDateTime createDate;
-  
   //mustache 에서도 getter 메소드 지원함 - 
   //getFormattedCreateDate() 사용하여 
   //결과 값을 show.html 로 데이터 전송하고 
@@ -76,6 +71,11 @@ public class Answer {
     DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
   }
   
+  /*5-1 질문하기 입력 시간을 표시하는 컬럼 추가*/
+  //LocalDateTime - Java 1.8 부터 지원하는 
+  //다수의 스레드들로부터 안전하게 접근할 수 있고 변경이 불가능한 final class
+  private LocalDateTime createDate;
+  
   public Answer() {
   }
   
@@ -87,12 +87,19 @@ public class Answer {
     
     contents = contents.replace("  ", "&nbsp;&nbsp;");
     contents = contents.replaceAll("\r\n", "<br/>");
-    /*contents = contents.replaceAll("\r", "<br/>");*/
     this.contents = contents;
     
     this.createDate = LocalDateTime.now();
   }
-
+  
+  //User 인스턴스 객체 writer 필드와
+  //User 인스턴스 객체 loginUser 가 같은 객체에 해당하는가
+  //결과가 false 가 나올 경우 해당 클래스(User 클래스) 내부에 
+  //hashCode(), equals() 메소드를 재정의해야 한다.
+  public boolean isSameWriter(User loginUser) {
+    return loginUser.equals(this.writer);
+  }
+  
   @Override
   public String toString() {
     return "Answer [id=" + id + ", writer=" + writer + ", contents=" + contents + ", createDate=" + createDate + "]";
